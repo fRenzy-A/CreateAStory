@@ -17,8 +17,8 @@ namespace CreateAStory
         {
             Console.WriteLine("Press Enter key to go");
 
-            string story =  "First Page;Second Page;Third Page;Fourth Page;5;6;7;8;9;10" ;
-            string[] splitter = story.Split(';');
+            string story = "First Page;Second Page;Third Page;Fourth Page;5;6;7;8;9;10" ;
+            string[] showStory = story.Split(';');
 
 
             ConsoleKeyInfo KeyInfo;
@@ -29,7 +29,7 @@ namespace CreateAStory
             {
                 Console.Clear();
                 GameStart = true;
-                Console.WriteLine(splitter[x]);
+                Console.WriteLine(showStory[x]);
                 while (GameStart == true)
                 {
                     ConsoleKeyInfo KeyInfo1;
@@ -43,7 +43,7 @@ namespace CreateAStory
                     {
                         x = x + 2;
                     }
-                    Console.WriteLine(splitter[x]);
+                    Console.WriteLine(showStory[x]);
                 }
                 Console.ReadKey(true);
             }
