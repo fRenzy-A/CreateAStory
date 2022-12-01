@@ -17,8 +17,13 @@ namespace CreateAStory
         {
             Console.WriteLine("Press Enter key to go");
 
+<<<<<<< Updated upstream
             string story = "First Page;Second Page;Third Page;Fourth Page;5;6;7;8;9;10" ;
             string[] showStory = story.Split(';');
+=======
+            string story = "First Page;Second Page;Third Page" + ";" + "Fourth Page;Fifth Page;Sixth Page" + ";" + "Seventh Page;Eight Page;Ninth Page;Tenth Page";
+            string[] splitter = story.Split(';','-');
+>>>>>>> Stashed changes
 
 
             ConsoleKeyInfo KeyInfo;
@@ -29,7 +34,11 @@ namespace CreateAStory
             {
                 Console.Clear();
                 GameStart = true;
+<<<<<<< Updated upstream
                 Console.WriteLine(showStory[x]);
+=======
+                Console.WriteLine(splitter[0]);
+>>>>>>> Stashed changes
                 while (GameStart == true)
                 {
                     ConsoleKeyInfo KeyInfo1;
@@ -39,7 +48,7 @@ namespace CreateAStory
                     {
                         x++;
                     }
-                    else if (KeyInfo1.Key == ConsoleKey.S)
+                    else if (KeyInfo1.Key == ConsoleKey.D)
                     {
                         x = x + 2;
                     }
@@ -49,6 +58,15 @@ namespace CreateAStory
             }
             
            
+        }
+        static void ChoiceMaker()
+        {
+
+        }
+
+        static void Story()
+        {
+
         }
     }
 }
