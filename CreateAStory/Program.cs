@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,56 +13,47 @@ namespace CreateAStory
     {
         static void Main(string[] args)
         {           
-            InteractiveStory();
+            Story();
+            Console.ReadKey(true);
         }
-        static int x = 0;
+
         static void InteractiveStory()
         {
-            Console.WriteLine("Press Enter key to go");
+            Story();
 
-            string story = "First Page;Second Page;Third Page" + ";" + "Fourth Page;Fifth Page;Sixth Page" + ";" + "Seventh Page;Eight Page;Ninth Page;Tenth Page";
-            string[] showStory = story.Split(';','-');
+            ConsoleKeyInfo ReadKey;
+            ReadKey = Console.ReadKey(true);
 
-
-            ConsoleKeyInfo KeyInfo;
-            KeyInfo = Console.ReadKey(true);//KeyInfo.Key
-            
-            bool GameStart = false;
-            if (KeyInfo.Key == ConsoleKey.Enter)
+            Console.WriteLine(story[0]);
+       
+            if (ReadKey.Key == ConsoleKey.A)
             {
-                Console.Clear();
-                GameStart = true;
-
-                Console.WriteLine(showStory[0]);
-
-                while (GameStart == true)
-                {
-                    ConsoleKeyInfo KeyInfo1;
-                    KeyInfo1 = Console.ReadKey(true);
-
-                    if (KeyInfo1.Key == ConsoleKey.A)
-                    {
-                        x++;
-                    }
-                    else if (KeyInfo1.Key == ConsoleKey.D)
-                    {
-                        x = x + 2;
-                    }
-                    Console.WriteLine(showStory[x]);
-                }
-                Console.ReadKey(true);
+                
             }
+            
+
+
             
            
         }
         static void ChoiceMaker()
         {
-
+            
         }
 
         static void Story()
         {
+            string[] story = { "FirstPage;FlipToPage2;FlipToPage3", "SecondPage;FlipToPage4;FlipToPage6", "ThirdPage;FlipToPage5;FlipToPage6", "4thPage", "5thPage", "6thPage" };
+            for (int i = 0; i < story.Length; i++)
+            {
+                string[] storysplitter = story[i].Split(';');
 
+                IDictionary<string, int> PageFlip = new Dictionary<string, int>();
+                PageFlip.Add(storysplitter[1], 3);
+                PageFlip.Add(storysplitter[2], 4);
+                PageFlip.Add(storysplitter[4], 9);
+                PageFlip.Add(storysplitter[5], 10);
+            }
         }
     }
 }
