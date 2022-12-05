@@ -12,20 +12,66 @@ namespace CreateAStory
 {
     internal class Program
     {
+        //static readonly string textfile = @"C:\Users\w0463280\Documents\InteractiveStory-Radiate";
         static void Main(string[] args)
         {
-            while (true)
-            {
-                Title();
-                InteractiveStory();              
-                Exit();
-            }
-
+            InteractiveStory();
         }
         
-        static int pg = 0;
+        //static int pg = 0;
+
 
         static void InteractiveStory()
+        {
+            Dictionary<string, string> PageSplits = new Dictionary<string, string>();
+            string[] textstory = System.IO.File.ReadAllLines(@"story.txt");
+
+            foreach (string line in textstory)
+            {
+                string[] story = line.Split(';');
+                PageSplits.Add("Plot", story[0]);
+                PageSplits.Add("Choice 1", story[1]);
+                PageSplits.Add("Choice 2", story[2]);
+                PageSplits.Add("PageChoice1", story[3]);
+                PageSplits.Add("PageChoice2", story[4]);
+            }
+
+            Console.WriteLine(PageSplits["Plot"]);
+            Console.ReadKey(true);
+        }
+        
+
+        static void Title()
+        {
+            string[,] Title = new string[,]
+            {   {"    _/_/_/                    _/  _/              _/              "},
+                {"   _/    _/    _/_/_/    _/_/_/        _/_/_/  _/_/_/_/    _/_/   " },
+                {"  _/_/_/    _/    _/  _/    _/  _/  _/    _/    _/      _/_/_/_/   " },
+                {" _/    _/  _/    _/  _/    _/  _/  _/    _/    _/      _/          " },
+                {"_/    _/    _/_/_/    _/_/_/  _/    _/_/_/      _/_/    _/_/_/    " }
+            };
+
+            for (int t = 0; t < Title.GetLength(0); t++)
+            {
+                for (int y = 0; y < Title.GetLength(1); y++)
+                {
+                    Console.Write(Title[t, y]);
+                }
+                Console.WriteLine();
+            }
+        }
+        static void Exit()
+        {
+            ConsoleKeyInfo ReadKey2;
+            ReadKey2 = Console.ReadKey(true);
+            if (ReadKey2.Key == ConsoleKey.Escape)
+            {
+                Environment.Exit(0);
+            }
+        }
+
+        // LEGACY CODE
+        /*static void InteractiveStory()
         {
             Console.WriteLine("Press Enter to start the game");
 
@@ -41,6 +87,7 @@ namespace CreateAStory
                 "Page 9:\n\n You go down the basement. You go deeper and deeper until you rach the lowest point. your radiator detector shoots through the roof. You explore the dark room until you notice a moving blob, viscous like honey. You realize you are in danger. Its too late. The substance jumps towards you;\n Bad Ending; Press ESC to exit;12;12",
                 "Page 10:\n\n You go back to the building you spotted a while back. As you enter the building, it looks to be a security room. It somehow looks untouched, still running with power, somehow the cameras miraclously working. You realize you are able to take the footage and watch what happened to the facility. You take the saved footage and immediately exit; Security Ending; Press ESC to exit;12;12"};
                       
+
             //key reader
             ConsoleKeyInfo ReadKey;
             ReadKey = Console.ReadKey(true);
@@ -110,35 +157,6 @@ namespace CreateAStory
 
                 }
             }               
-        }
-
-        static void Title()
-        {
-            string[,] Title = new string[,]
-            {   {"    _/_/_/                    _/  _/              _/              "},
-                {"   _/    _/    _/_/_/    _/_/_/        _/_/_/  _/_/_/_/    _/_/   " },
-                {"  _/_/_/    _/    _/  _/    _/  _/  _/    _/    _/      _/_/_/_/   " },
-                {" _/    _/  _/    _/  _/    _/  _/  _/    _/    _/      _/          " },
-                {"_/    _/    _/_/_/    _/_/_/  _/    _/_/_/      _/_/    _/_/_/    " }
-            };
-
-            for (int t = 0; t < Title.GetLength(0); t++)
-            {
-                for (int y = 0; y < Title.GetLength(1); y++)
-                {
-                    Console.Write(Title[t, y]);
-                }
-                Console.WriteLine();
-            }
-        }
-        static void Exit()
-        {
-            ConsoleKeyInfo ReadKey2;
-            ReadKey2 = Console.ReadKey(true);
-            if (ReadKey2.Key == ConsoleKey.Escape)
-            {
-                Environment.Exit(0);
-            }
-        }
+        }*/
     }
 }
