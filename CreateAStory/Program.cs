@@ -17,11 +17,16 @@ namespace CreateAStory
         {
             InteractiveStory();
         }
-        
+
         //static int pg = 0;
 
-
+        static int page = 0;
         static void InteractiveStory()
+        {
+            
+        }
+        
+        static void StorySetUp()
         {
             Dictionary<string, string> PageSplits = new Dictionary<string, string>();
             string[] textstory = System.IO.File.ReadAllLines(@"story.txt");
@@ -29,17 +34,28 @@ namespace CreateAStory
             foreach (string line in textstory)
             {
                 string[] story = line.Split(';');
-                PageSplits.Add("Plot", story[0]);
-                PageSplits.Add("Choice 1", story[1]);
-                PageSplits.Add("Choice 2", story[2]);
-                PageSplits.Add("PageChoice1", story[3]);
-                PageSplits.Add("PageChoice2", story[4]);
+                
+                int p1 = int.Parse(story[3]);
+                int p2 = int.Parse(story[4]);
+                PlayerChoice(p1, p2);
             }
 
-            Console.WriteLine(PageSplits["Plot"]);
             Console.ReadKey(true);
         }
-        
+        static void PlayerChoice(int option1, int option2)
+        {
+            ConsoleKeyInfo input;
+            input = Console.ReadKey(true);
+
+            if (input.Key == ConsoleKey.A)
+            {
+                page = option1;
+            }
+            else if (input.Key == ConsoleKey.B)
+            {
+                page = option2;
+            }
+        }
 
         static void Title()
         {
