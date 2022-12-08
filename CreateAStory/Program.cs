@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Net;
 using System.Net.NetworkInformation;
 using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Text;
@@ -13,45 +14,67 @@ namespace CreateAStory
     internal class Program
     {
         //static readonly string textfile = @"C:\Users\w0463280\Documents\InteractiveStory-Radiate";
+        //Setup for other methods to use
+        static bool GameStart = false;
+        static int page = 0;
+        static int option1 = 0;
+        static int option2 = 0;
+        static string[] textstory = System.IO.File.ReadAllLines(@"story.txt");
         static void Main(string[] args)
         {
-            InteractiveStory();
+            while (true)
+            {
+                Console.Clear();
+                InteractiveStory();
+                while (GameStart == true)
+                {
+                    StorySetUp();
+                }
+            }
         }
-
-        //static int pg = 0;
-
-        static int page = 0;
         static void InteractiveStory()
         {
             
+            Console.WriteLine("Press Enter to start");
+            ConsoleKeyInfo ReadKey1 = Console.ReadKey(true);
+            if (ReadKey1.Key == ConsoleKey.Enter)
+            {
+                GameStart = true;
+            }
         }
-        
         static void StorySetUp()
         {
-            Dictionary<string, string> PageSplits = new Dictionary<string, string>();
-            string[] textstory = System.IO.File.ReadAllLines(@"story.txt");
-
-            foreach (string line in textstory)
+            Console.Clear();
+            string line = textstory[page];
+            string[] storypage = line.Split(';');
+            ConsoleKeyInfo KeyReader = Console.ReadKey();
+            if (storypage.Length < 3)
             {
-                string[] story = line.Split(';');
-                
-                int p1 = int.Parse(story[3]);
-                int p2 = int.Parse(story[4]);
-                PlayerChoice(p1, p2);
+                for (int i = 0; i < storypage.Length; i++)
+                {
+                    Console.WriteLine(storypage[i]);
+                    Console.ReadKey(true);
+                    GameStart = false;
+                }
             }
-
-            Console.ReadKey(true);
+            else
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    option1 = int.Parse(storypage[3]);
+                    option2 = int.Parse(storypage[4]);                   
+                    Console.WriteLine(storypage[i]);
+                    PlayerChoice(KeyReader);
+                }               
+            }
         }
-        static void PlayerChoice(int option1, int option2)
+        static void PlayerChoice(string ReadKey)
         {
-            ConsoleKeyInfo input;
-            input = Console.ReadKey(true);
-
-            if (input.Key == ConsoleKey.A)
+            if (ReadKey == "a")
             {
                 page = option1;
             }
-            else if (input.Key == ConsoleKey.B)
+            else if (ReadKey == "b")
             {
                 page = option2;
             }
