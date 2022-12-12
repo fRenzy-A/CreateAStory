@@ -1,12 +1,15 @@
-﻿using System;
+﻿using Microsoft.SqlServer.Server;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CreateAStory
@@ -16,21 +19,19 @@ namespace CreateAStory
         //static readonly string textfile = @"C:\Users\w0463280\Documents\InteractiveStory-Radiate";
         //Setup for other methods to use
         static bool GameStart = false;
-        static string[] textstory = System.IO.File.ReadAllLines(@"story.txt");
+        static readonly string[] textstory = System.IO.File.ReadAllLines(@"story.txt");
+        static readonly string[] save = System.IO.File.ReadAllLines(@"savegame.txt");
         static int page = 0;
         static int option1 = 0;
         static int option2 = 0;
         static void Main(string[] args)
-        {          
+        {
             while (true)
             {
-                Console.Clear();
-                Title();
-                Console.WriteLine();
-                InteractiveStory();
+                MainMenu();
                 while (GameStart == true)
                 {
-                    StorySetUp();
+                    InteractiveStory();
                 }
             }
             
@@ -40,42 +41,76 @@ namespace CreateAStory
         {
             Console.Clear();
             Title();
-
-        }
-        static void InteractiveStory()
-        {
-            Console.WriteLine("Press Enter to start the story\nPress ESC to exit the application");
-            ConsoleKeyInfo KeyReader = Console.ReadKey();
-            if (KeyReader.Key == ConsoleKey.Enter)
+            Console.WriteLine("\n\nPress A - New Game\n\nPress B - Load Game\n\nPress ESC - Exit Game");
+            ConsoleKeyInfo KeyReader = Console.ReadKey(true);
+            if (KeyReader.Key == ConsoleKey.A)
             {
                 GameStart = true;
             }
+            else if (KeyReader.Key == ConsoleKey.B)
+            {
+                if (new FileInfo("savegame.txt").Length == 0)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("There are no saved games. Consider doing a new playthrough");
+                    Thread.Sleep(2000);
+                }
+                else if (save[0] == textstory[0])
+                {
+                    page = int.Parse(save[1]);
+                    GameStart = true;
+                }
+                else
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("The save file does not line up with the current story. Please make sure the story.txt file has the same story used or make a new playthrough");
+                    Thread.Sleep(2000);
+                }
+            }
+            else if (KeyReader.Key == ConsoleKey.Escape)
+            {
+                Environment.Exit(0);
+            }            
+        }
+        static void InteractiveStory()
+        {
+            Console.Clear();
+            StorySetUp();
+            PlayerChoice(Console.ReadKey(true));
         }
 
         static void StorySetUp()
         {
-            Console.Clear();
             string line = textstory[page];
-            string[] storypage = line.Split(';');
-
-            //story printer
-            if (storypage.Length < 3)
-            {
-                Console.WriteLine(storypage[0]);
-                Console.WriteLine("Press ESC to exit");
-                PlayerExit(Console.ReadKey());
-            }
-            else
+            string[] splitter = line.Split(';');
+            ChoiceandPrinter(splitter);           
+        }
+        static void ChoiceandPrinter(string[] storypage)
+        {
+            //if it reads an element with delimiters
+            if (storypage.Length > 1)
             {
                 option1 = int.Parse(storypage[3]);
                 option2 = int.Parse(storypage[4]);
-                Console.WriteLine("Plot: " + storypage[0]);
+                Console.WriteLine("Plot:\n\n" + storypage[0]);
                 Console.WriteLine();
                 Console.WriteLine("Make your choice: ");
-                Console.WriteLine(storypage[1] + " (flip to page " + option1 + ")");
-                Console.WriteLine(storypage[2] + " (flip to page " + option2 + ")");
-                PlayerChoice(Console.ReadKey());    
+                Console.WriteLine("--------------------------------");
+                Console.WriteLine("Press A - " + storypage[1] + " (flip to page " + option1 + ")");
+                Console.WriteLine("Press B - " + storypage[2] + " (flip to page " + option2 + ")");
+                Console.WriteLine();
+                Console.WriteLine("Press C - Save Game");
+                Console.WriteLine("Press ESC - Return to Menu");
+                Console.WriteLine();
             }
+            else
+            {
+                //if it reads an element with no delimiters. 
+                Console.WriteLine(storypage[0] + "\n");
+                Console.WriteLine("THE END\n");
+                Console.WriteLine("Press ESC to exit");
+                PlayerExit(Console.ReadKey(true));
+            }           
         }
         static void PlayerChoice(ConsoleKeyInfo ReadKey)
         {
@@ -87,20 +122,30 @@ namespace CreateAStory
             {
                 page = option2 - 1;
             }
+            else if (ReadKey.Key == ConsoleKey.C)
+            {
+                string[] savereader = { textstory[0], Convert.ToString(page) };
+                File.WriteAllLines("savegame.txt", savereader);
+                Console.WriteLine("Game Saved");
+                Thread.Sleep(2000);
+            }               
             if (ReadKey.Key == ConsoleKey.Escape)
             {
+                page = 0;
+                option1 = 0;
+                option2 = 0;
                 GameStart = false;
             }
-
         }
-        static void PlayerExit(ConsoleKeyInfo ReadKey)
-        {
-            page = 0;
-            option1 = 0;
-            option2 = 0;
-            if (ReadKey.Key == ConsoleKey.Escape)
+        static void PlayerExit(ConsoleKeyInfo ReadKeyExit)
+        {        
+            if (ReadKeyExit.Key == ConsoleKey.Escape)
             {
+                page = 0;
+                option1 = 0;
+                option2 = 0;
                 GameStart = false;
+                return;
             }
         }
         static void Title()
@@ -122,15 +167,7 @@ namespace CreateAStory
                 Console.WriteLine();
             }
         }
-        static void Exit()
-        {
-            ConsoleKeyInfo ReadKey2;
-            ReadKey2 = Console.ReadKey(true);
-            if (ReadKey2.Key == ConsoleKey.Escape)
-            {
-                Environment.Exit(0);
-            }
-        }
+
 
         // LEGACY CODE
         /*static void InteractiveStory()
